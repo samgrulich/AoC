@@ -49,6 +49,8 @@ int main(int argc, char *argv[]) {
         moves += line;
     }
 
+    std::cout << mapX << " " << mapY << std::endl;
+
     for (char m : moves) {
         std::cout << "move: " << m << std::endl;
         switch (m) {
