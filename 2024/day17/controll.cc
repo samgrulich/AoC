@@ -8,12 +8,14 @@ long regs[3] = {0, 0, 0};
 std::vector<short> program;
 std::vector<short> output;
 
+// long val = std::pow(8, 16);
+
 int combo(short operand);
 int op(short code, short operand);
 
 int main(int argc, char* argv[]) {
-    if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " <filename>" << std::endl;
+    if (argc != 3) {
+        std::cerr << "Usage: " << argv[0] << " <filename> <number>" << std::endl;
         return 1;
     }
 
@@ -21,6 +23,7 @@ int main(int argc, char* argv[]) {
     std::ifstream file(argv[1]);
     std::string line;
     int i = 0;
+    long val = std::stol(argv[2]);
     while (std::getline(file, line) && !line.empty()) {
         regs[i++] = std::stoi(line.substr(12));
     }
@@ -35,45 +38,22 @@ int main(int argc, char* argv[]) {
     program.push_back(std::stoi(line.substr(0, 1))); 
 
 
-    // Find possible vals
-    std::vector<long> vals = {0};
-    for (int j = program.size() - 1; j >= 0; j--) {
-        std::vector<long> new_vals;
-        for (auto val : vals) {
-            for (int i = 0; i < 8; i++) {
-                // clear 
-                long ival = val + i;
-                ip = 0;
-                regs[0] = ival;
-                regs[1] = 0;
-                regs[2] = 0;
-                // one pass through
-                while (ip < program.size() - 2) { // break before jump to prevent loops
-                    short code = program[ip];
-                    short operand = program[ip+1];
-                    if (op(code, operand) == 0) {
-                        ip += 2;
-                    }
-                }
-                int idx = program.size() - j - 1;
-                if (output[0] == program[j]) {
-                    new_vals.push_back(j != 0 ? ival << 3 : ival);
-                } 
-                output.clear();
-            }
-
-        }
-        vals = new_vals;
-        if (!vals.size()) {
-            std::cout << "No solution found" << std::endl;
-            return 1;
+    // Run program
+    regs[0] = val;
+    while (ip < program.size()) {
+        short code = program[ip];
+        short operand = program[ip+1];
+        // printf("ip=%d, code=%d, operand=%d, regs=[%ld, %ld, %ld]\n", ip, code, operand, regs[0], regs[1], regs[2]);
+        if (op(code, operand) == 0) {
+            ip += 2;
         }
     }
 
-    std::cout << "Found solution(s) " << vals.size() << " :" << '\n';
-    for (int i = 0; i < vals.size(); i++) {
-        std::cout << vals[i] << std::endl;
+    std::cout << "Found solution: " << (output == program) << std::endl;
+    for (int i = 0; i < output.size(); i++) {
+        std::cout << output[i] << " ";
     }
+    std::cout << std::endl;
 }
 
 int combo(short operand) {
