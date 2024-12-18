@@ -1,0 +1,28 @@
+bst 4;   b = a & 7             ; b = a%8
+bxl 1;   b = b ^ 1             ; b = b ^ 1
+cdv 5;   c = a >> b            ; c = a // 2**b
+adv 3;   a = a >> 3            ; a = a // 8
+bxl 4;   b = b ^ 4             ; b = b ^ 4
+bxc 4;   b = b ^ c             ; b = b ^ c
+out 5;   out << (b & 7)        ; out(b%8)
+jnz 0;   if a != 0 -- ip = 0   ; jnz
+
+c = a >> ((a & 7) ^ 1)
+a = a >> 3
+b = ((a & 7) ^ 1) ^ 4) ^ (a >> ((a & 7) ^ 1))
+out = (((a & 7)^ 1) ^ 4) ^ (a >> (a & 7) ^ 1))) & 7
+
+
+2,4,1,1,7,5,0,3,1,4,4,4,5,5,3,0
+out len = 16
+
+last one is b = 8;
+----
+
+solution is 8^n < solution < 8^(n+1)
+where n = 16
+
+bst 4;   b = a & 7             ; b = a%8
+cdv 5;   c = a >> b            ; c = a // 2**b
+adv 3;   a = a >> 3            ; a = a // 8
+out 5;   out << (b & 7)        ; out(b%8)

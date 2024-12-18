@@ -1,0 +1,39 @@
+bst 4;   b = combo(4) mod 8
+bxl 1;   b = b ^ 1
+cdv 5;   c = a / 2^combo(5)
+adv 3;   a = a / 2^combo(3)
+bxl 4;   b = b ^ 4
+bxc 4;   b = b ^ c
+out 5;   out << combo(5) mod 8
+jnz 0;   if a != 0 -- ip = 0
+
+
+
+-----------------------------
+bst 4;   b = a mod 8     // a = 8*(i+b)
+bxl 1;   b = b ^ 1       
+cdv 5;   c = a >> b    
+adv 3;   a = a >> 3
+bxl 4;   b = b ^ 4
+bxc 4;   b = b ^ c       //   = (b^4) ^ (a >> b) 
+out 5;   out << b mod 8  // b = 8*(i+out)
+jnz 0;   if a != 0 -- ip = 0
+
+start: 
+a = x 
+b = 0 
+c = 0
+---
+c = a / 2^(a mod 8 ^ 1)
+a /= 8
+b = ((a mod 8 ^ 1) ^ 4) ^ (a / 2^(a mod 8 ^ 1))
+out = ((a mod 8 ^ 1) ^ 4) ^ (a / 2^(a mod 8 ^ 1)) mod 8
+
+
+2,4,1,1,7,5,0,3,1,4,4,4,5,5,3,0
+out len = 16
+
+last one is b = 8;
+
+----
+
