@@ -1,7 +1,7 @@
 CXX:=g++
 
 aoc: main.cc
-	$(CXX) -o aoc $^
+	$(CXX) -g -o aoc $^
 
 clean:
 	rm -f aoc
