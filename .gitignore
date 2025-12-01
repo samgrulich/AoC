@@ -1,1 +1,4 @@
-*/aoc
+**/aoc
+**/*.in
+**/*.out
+!*test.in
