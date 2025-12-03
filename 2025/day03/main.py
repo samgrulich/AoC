@@ -1,6 +1,17 @@
 import sys
 import numpy as np
 
+MAX_N = 12
+
+
+def slice_mat(A: np.ndarray, ids: np.ndarray, offset: int):
+    off = -offset if offset != 0 else None
+    return [row[i + 1 : off] for row, i in zip(A, ids)]
+
+
+def slice_ids(A, ids: list):
+    return [row[i] for row, i in zip(A, ids)]
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -15,13 +26,22 @@ if __name__ == "__main__":
     n = len(lines)
     numbers = lines.view("U1").reshape(n, -1).astype(np.int32)
 
-    i = np.argmax(numbers[:, :-1], axis=1)
+    prev_ids = -np.ones(n, np.int32)
     results = np.array([])
-    for k, arr in enumerate(numbers):
-        l = i[k]
-        first = numbers[k, l]
-        second = np.max(np.array(arr[l + 1 :]))
-        result = int(str(first) + str(second))
-        results = np.append(results, result)
+    for offset in range(MAX_N - 1, -1, -1):
+        # print(numbers, prev_ids, offset)
+        mats = slice_mat(numbers, prev_ids, offset)
+        print(prev_ids)
+        ids = [np.argmax(arr) for arr in mats]
+        res = slice_ids(mats, ids)
+        print(np.array(ids))
+        print("mats: ", mats)
+        prev_ids = prev_ids + np.array(ids) + 1
+        # print(res)
+        results = np.append(results, res)
 
-    print(results, results.sum())
+    tens = np.pow(10, np.arange(MAX_N - 1, -1, -1))
+    results = results.reshape(-1, n).T
+
+    print((tens * results).astype(np.int64).sum(1))
+    print((tens * results).astype(np.float64).sum(1).sum())
