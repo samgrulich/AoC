@@ -25,7 +25,12 @@ if __name__ == "__main__":
 
     counts = conv2d(chars, kernel)
     indices = np.logical_and((counts < 4), (chars == "@"))
-    chars[indices] = "x"
-    for row in ["".join(row) for row in chars]:
-        print(row)
-    print(indices.sum())
+    sum = 0
+    while indices.sum() > 0:
+        chars[indices] = "x"
+        sum += indices.sum()
+        counts = conv2d(chars, kernel)
+        indices = np.logical_and((counts < 4), (chars == "@"))
+    # for row in ["".join(row) for row in chars]:
+    #     print(row)
+    print(sum)
